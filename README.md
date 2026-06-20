@@ -19,13 +19,3 @@
 ```
 Push → Gradle Build → Docker Image → ECR Push → S3 Upload → CodeDeploy → EC2
 ```
-
-## 실행 방법
-
-```bash
-# 로컬 빌드
-./gradlew bootJar -x test
-
-# Docker 빌드
-docker build -t perfscale .
-```
