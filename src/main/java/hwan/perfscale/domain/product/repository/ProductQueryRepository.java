@@ -56,6 +56,34 @@ public class ProductQueryRepository {
     }
 
     /**
+     * 무한 스크롤용 페이징 검색.
+     * count 쿼리 없이 size+1건을 가져와 마지막 1건 존재 여부로 hasNext를 판단한다.
+     */
+    public ProductSearchResult searchWithPaging(String keyword, Long brandId, Long categoryId,
+                                                 ProductGender gender, Integer maxPrice,
+                                                 int page, int size) {
+        List<Product> rows = queryFactory
+                .selectFrom(product)
+                .join(product.brand, brand).fetchJoin()
+                .join(product.category, category).fetchJoin()
+                .where(
+                        productNameContains(keyword),
+                        brandIdEq(brandId),
+                        categoryIdEq(categoryId),
+                        genderEq(gender),
+                        priceLoe(maxPrice)
+                )
+                .orderBy(product.createdAt.desc())
+                .offset((long) page * size)
+                .limit(size + 1L)
+                .fetch();
+
+        boolean hasNext = rows.size() > size;
+        List<Product> content = hasNext ? rows.subList(0, size) : rows;
+        return new ProductSearchResult(content, hasNext);
+    }
+
+    /**
      * 특정 카테고리 상품을 평점 높은 순으로 조회
      */
     public List<Product> findTopRatedByCategory(Long categoryId, int limit) {

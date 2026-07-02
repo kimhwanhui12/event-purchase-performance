@@ -58,15 +58,23 @@ public class Order {
     private List<OrderItem> items = new ArrayList<>();
 
     @Builder
-    public Order(User user, int totalAmount, String receiverName, String zipCode, String address, String phone) {
+    public Order(User user, String receiverName, String zipCode, String address, String phone) {
         this.user = user;
-        this.totalAmount = totalAmount;
+        this.totalAmount = 0;
         this.receiverName = receiverName;
         this.zipCode = zipCode;
         this.address = address;
         this.phone = phone;
         this.status = OrderStatus.PENDING;
         this.createdAt = LocalDateTime.now();
+    }
+
+    /**
+     * 주문 상품 추가 (OrderItem 생성 시 스스로 계산한 소계를 총액에 누적)
+     */
+    public void addItem(OrderItem item) {
+        this.items.add(item);
+        this.totalAmount += item.getSubtotal();
     }
 
     /**

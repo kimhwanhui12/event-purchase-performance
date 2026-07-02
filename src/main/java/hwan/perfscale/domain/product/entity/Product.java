@@ -21,6 +21,9 @@ public class Product {
     @Column(name = "product_name", length = 255, nullable = false)
     private String productName;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
@@ -58,10 +61,11 @@ public class Product {
     private LocalDateTime createdAt;
 
     @Builder
-    public Product(String productName, Brand brand, Category category, int price,
+    public Product(String productName, String description, Brand brand, Category category, int price,
                    ProductGender gender, int discountRate, int rating, int reviewCount,
                    String imageUrl, String source, String sourceUrl) {
         this.productName = productName;
+        this.description = description;
         this.brand = brand;
         this.category = category;
         this.price = price;
